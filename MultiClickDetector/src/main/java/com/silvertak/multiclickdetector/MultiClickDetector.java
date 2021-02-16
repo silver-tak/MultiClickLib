@@ -10,13 +10,18 @@ public class MultiClickDetector {
     View view;
     int count;
     int clickCount = 0;
-    long interval = 0;
+    long interval = 500;
     Detector detector;
     Handler handler;
 
     public static MultiClickDetector detect(View view, int count, long interval)
     {
         return new MultiClickDetector(view, count, interval);
+    }
+
+    public static MultiClickDetector detect(View view, int count)
+    {
+        return new MultiClickDetector(view, count);
     }
 
     public MultiClickDetector(View view, int count) {
@@ -37,17 +42,32 @@ public class MultiClickDetector {
     private void init()
     {
         handler = new Handler(callback);
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickCount++;
+                if (clickCount == 2) {
+                    if (MultiClickDetector.this.detector != null)
+                        MultiClickDetector.this.detector.onDoubleClick();
+                }
+
                 if (clickCount == count) {
                     if (MultiClickDetector.this.detector != null)
-                        MultiClickDetector.this.detector.onMultiClicks();
+                        MultiClickDetector.this.detector.onMultiClick();
                 } else {
                     handler.removeMessages(0);
                     handler.sendEmptyMessageDelayed(0, interval);
                 }
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (MultiClickDetector.this.detector != null)
+                    MultiClickDetector.this.detector.onLongClick();
+                return true;
             }
         });
     }
@@ -66,6 +86,8 @@ public class MultiClickDetector {
 
     public interface Detector
     {
-        void onMultiClicks();
+        void onMultiClick();
+        void onLongClick();
+        void onDoubleClick();
     }
 }
