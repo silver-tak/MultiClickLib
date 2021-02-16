@@ -1,0 +1,3 @@
+include ':MultiClickDetector'
+include ':app'
+rootProject.name = "MultiClickLib"
