@@ -12,6 +12,8 @@ import com.silvertak.multiclickdetector.detector.AllDetector;
 
 public class MainActivity extends AppCompatActivity {
 
+    ClickDetector clickDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         final int nClickCount = 5;
         long interval = 500;
 
-        ClickDetector.detect(button, interval)
+        clickDetector = ClickDetector.detect(button, interval)
                 .setAllDetector(new AllDetector() {
                     @Override
                     public void onMultiClick(View view) {
@@ -38,5 +40,11 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, view.toString() + " onDoubleClick Call.", Toast.LENGTH_SHORT).show();
                     }
                 }, nClickCount);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clickDetector.stop();
     }
 }

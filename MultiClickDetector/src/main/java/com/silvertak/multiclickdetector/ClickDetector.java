@@ -51,6 +51,12 @@ public class ClickDetector {
         setOnLongClickListener();
     }
 
+    public void stop()
+    {
+        this.view.setOnClickListener(null);
+        this.view.setOnLongClickListener(null);
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
@@ -60,6 +66,9 @@ public class ClickDetector {
     };
 
     private void setOnClickListener() {
+        if(view.hasOnClickListeners())
+            return;
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +90,9 @@ public class ClickDetector {
     }
 
     private void setOnLongClickListener() {
+        if(view.hasOnLongClickListeners())
+            return;
+
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -94,6 +106,8 @@ public class ClickDetector {
     public ClickDetector setAllDetector(AllDetector allDetector, int count) {
         this.allDetector = allDetector;
         this.count = count;
+        setOnClickListener();
+        setOnLongClickListener();
         return this;
     }
 
@@ -101,16 +115,19 @@ public class ClickDetector {
     {
         this.multiClickDetector = multiClickDetector;
         this.count = count;
+        setOnClickListener();
         return this;
     }
 
     public ClickDetector setDoubleClickDetector(DoubleClickDetector doubleClickDetector) {
         this.doubleClickDetector = doubleClickDetector;
+        setOnClickListener();
         return this;
     }
 
     public ClickDetector setLongClickDetector(LongClickDetector longClickDetector) {
         this.longClickDetector = longClickDetector;
+        setOnLongClickListener();
         return this;
     }
 }
